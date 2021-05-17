@@ -32,7 +32,6 @@ void aluno::ler(){
    cout << "Nome:";		getline(cin,Nome);
    cout << "Nota1:";		cin >> n1;
    cout << "Nota2:";		cin >> n2;
-
 }
 
 void TTurma::ler(){

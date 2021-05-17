@@ -3,15 +3,14 @@
 using namespace std;
 
 #define max 100
+#define qtdN q=0
 
-class TConjunto
-{
+class TConjunto{
 	private:
 		float a[max];
 		int q,obterIndice(float n);
 	public:
-		void ler();
-		void mostrar();
+		void ler(),mostrar();
 		void uniao(TConjunto a, TConjunto b);
 		void intersecao(TConjunto a, TConjunto b);
 		void subtracao(TConjunto a, TConjunto b);
@@ -23,11 +22,8 @@ class TConjunto
 };
 
 int TConjunto::obterIndice(float n){
-	bool achou=false;
-	int i=0;
-	while (!achou && i<q)
-		if (a[i] == n)achou = true;
-		else i++;
+	bool achou=false;	int i=0;
+	while (!achou && i<q)a[i]==n?achou = true : i++;
 	return achou?i:-1;
 }
 
@@ -49,7 +45,7 @@ void TConjunto::ler(){
 	int N;
 	cout << "entre com a quantidade de numeros a digitar:";
 	cin >> N;
-	q = 0;
+	qtdN;
 	for(int i=0; i<N; i++){
 		float b;
 		cout << "x=";
@@ -63,25 +59,22 @@ void TConjunto::mostrar(){
 	cout << "}" << endl;
 }
 void TConjunto::uniao(TConjunto a, TConjunto b){
-	q = 0;
+	qtdN;
 	for(int i=0;i<a.q;i++)inserir(a.a[i]);
 	for(int i=0;i<b.q;i++)inserir(b.a[i]);
 }
 void TConjunto::intersecao(TConjunto a, TConjunto b){
-	q = 0;
-	for(int i=0;i<a.q;i++)
-		if (b.pertence(a.a[i]))inserir(a.a[i]);
+	qtdN;
+	for(int i=0;i<a.q;i++)if (b.pertence(a.a[i]))inserir(a.a[i]);
 }
 void TConjunto::subtracao(TConjunto a, TConjunto b){
-	q = 0;
-	for(int i=0;i<a.q;i++)
-		if (!b.pertence(a.a[i]))inserir(a.a[i]);
+	qtdN;
+	for(int i=0;i<a.q;i++)if (!b.pertence(a.a[i]))inserir(a.a[i]);
 }
 bool TConjunto::contem(TConjunto a){
-	bool ok=true;
-	for(int i=0;i<a.q && ok;i++)
-		if (!pertence(a.a[i]))ok = false;
-	return ok;	
+	bool C=true;
+	for(int i=0;i<a.q && C;i++)if (!pertence(a.a[i]))C = false;
+	return C;	
 }
 
 int main(){
