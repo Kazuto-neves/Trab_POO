@@ -30,7 +30,7 @@ void TVet::ler(){
 
 float TVet::maior(){
     float m;  m=num[0];
-    for (int i=0;i<=q;i++){
+    for (int i=0;i<q;i++){
         if(m<num[i])m=num[i];
         else m;
     }

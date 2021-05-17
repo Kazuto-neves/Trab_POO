@@ -6,7 +6,7 @@ using namespace std;
 
 class TVetInt{
     private:
-        int a[MAX],q;
+        int a[MAX],b[MAX],q;
     public:
         void ler();
         void inverter();
@@ -23,18 +23,16 @@ void TVetInt::ler(){
 }
 
 void TVetInt::inverter(){
-    int b[MAX];
-    for(int i=q-1;i>=0;i--)
-        for(int j=0;j<=q;j++)
-            b[j]=a[i];
-    for(int i=0;i<=q;i++)
-        a[i]=b[i];
-        
+ 	int j = 0;
+ 	for (int i=q-1;i>=0;i--){
+		b[j] = a[i];
+		j++;
+	}   
 }
 
 void TVetInt::listar(){
-    for(int i=0;i<=q;i++)
-       cout << a[i] << " ";
+    for(int i=0;i<q;i++)
+       cout << b[i] << " ";
     cout << endl;
 }
 
