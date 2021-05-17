@@ -8,14 +8,14 @@ using namespace std;
 class aluno{
     private:
        string Nome;
-       float n1,n2;
+       float N1,N2;
     public:
-       void ler();
-       float media(){return (n1+2*n2)/3;};
+       void IncerirAluno();
+       float media(){return (N1+2*N2)/3;};
        string AouR(){return media()>=6?"Aprovado":"Reprovado";};
        string getNome(){return Nome;};
-       float getN1(){return n1;};
-       float getN2(){return n2;};
+       float getN1(){return N1;};
+       float getN2(){return N2;};
 };
 
 class TTurma{
@@ -27,16 +27,16 @@ class TTurma{
         void listar();
 };
 
-void aluno::ler(){
+void aluno::IncerirAluno(){
    cin.ignore();
    cout << "Nome:";		getline(cin,Nome);
-   cout << "Nota1:";		cin >> n1;
-   cout << "Nota2:";		cin >> n2;
+   cout << "Nota1:";		cin >> N1;
+   cout << "Nota2:";		cin >> N2;
 }
 
 void TTurma::ler(){
   cout << "Entre com a quantidade de aluno:";   cin >> q;
-  for (int i=0; i<q ; i++)a[i].ler();
+  for (int i=0; i<q ; i++)a[i].IncerirAluno();
 }
 
 void TTurma::listar(){
