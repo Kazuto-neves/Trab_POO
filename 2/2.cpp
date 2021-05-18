@@ -9,29 +9,17 @@ class TVetInt{
         int a[max],b[max],q;
     public:
         void ler();
-        void inverter();
+        void inverter(){for (int i=q-1,x=0;i>=0;i--,x++)b[x] = a[i];};
         void listar();
 };
 
 void TVetInt::ler(){
-    cout << "Entre com a quantidade de elementos:"; cin >> q;
-    for(int i=0; i<q; i++){
-       cout << "entre com o valor " << i+1 << " de " << q << ":";
-       cin >> a[i]; 
-    }
-}
-
-void TVetInt::inverter(){
- 	int j = 0;
- 	for (int i=q-1;i>=0;i--){
-		b[j] = a[i];
-		j++;
-	}   
+    cin >> q;
+    for(int i=0; i<q; i++)cin >> a[i]; 
 }
 
 void TVetInt::listar(){
-    for(int i=0;i<q;i++)
-       cout << b[i] << " ";
+    for(int i=0;i<q;i++)i==q-1?cout<<b[i]:cout << b[i] << " ";
     cout << endl;
 }
 

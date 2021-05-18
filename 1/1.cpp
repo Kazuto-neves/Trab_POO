@@ -24,7 +24,6 @@ double TPoligono::perimetro(){
     return p;
 }
 
-
 int main(){
     TPoligono p;
 	p.ler();

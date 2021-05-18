@@ -14,8 +14,6 @@ class aluno{
        float Media(){return (N1+2*N2)/3;};
        string Condicao(){return Media()>=6?"Aprovado":"Reprovado";};
        string getNome(){return Nome;};
-       float getN1(){return N1;};
-       float getN2(){return N2;};
 };
 
 class TTurma{
@@ -29,20 +27,19 @@ class TTurma{
 
 void aluno::IncerirAluno(){
    cin.ignore();
-   cout << "Nome:";		getline(cin,Nome);
-   cout << "Nota1:";		cin >> N1;
-   cout << "Nota2:";		cin >> N2;
+   getline(cin,Nome);
+   cin >> N1 >> N2;
 }
 
 void TTurma::ler(){
-  cout << "Entre com a quantidade de aluno:";   cin >> q;
+  cin >> q;
   for (int i=0; i<q ; i++)a[i].IncerirAluno();
 }
 
 void TTurma::listar(){
    cout << setprecision(2) << fixed;
    for(int i=0;i<q;i++)
-      cout << setw(30) << left << a[i].getNome() << right << setw(6) << a[i].getN1() << setw(6) << a[i].getN2() << setw(6) << a[i].Media() << setw(10) << left << " " << a[i].Condicao() << endl;       
+      cout << setw(50) << left << a[i].getNome() << right << a[i].Media() << " " << a[i].Condicao() << endl;       
 }
 
 int main(){
