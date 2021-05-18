@@ -39,7 +39,7 @@ void TTurma::ler(){
 void TTurma::listar(){
    cout << setprecision(2) << fixed;
    for(int i=0;i<q;i++)
-      cout << setw(50) << left << a[i].getNome() << right << a[i].Media() << " " << a[i].Condicao() << endl;       
+      cout << setw(50) << left << a[i].getNome() << setw(6) << right << a[i].Media() << " " << a[i].Condicao() << endl;       
 }
 
 int main(){
