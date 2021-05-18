@@ -12,7 +12,7 @@ class TPotencia{
 	    int exp;
     public:
         void ler();
-	    float calcular(float b);
+	    float calcular(float f);
 };
 
 class TPolinomio{
@@ -21,7 +21,7 @@ class TPolinomio{
    	    int q;
     public:
 	    void ler();
-	    float calcular(float b);
+	    float calcular(float f);
 };
 
 void TPotencia::ler(){
@@ -29,8 +29,8 @@ void TPotencia::ler(){
    cout << "Expoente:";	cin >> exp; 
 }
 
-float TPotencia::calcular(float b){
-   return n*pow(b,exp);
+float TPotencia::calcular(float f){
+   return n*pow(f,exp);
 }
 
 void TPolinomio::ler(){
@@ -42,10 +42,10 @@ void TPolinomio::ler(){
     }      
 }
 
-float TPolinomio::calcular(float b){
+float TPolinomio::calcular(float f){
     float s=0;
     cout << setprecision(1) << fixed;
-    for(int i=0; i<q; i++)s=s+a[i].calcular(b);
+    for(int i=0; i<q; i++)s=s+a[i].calcular(f);
     return s;
 }
 

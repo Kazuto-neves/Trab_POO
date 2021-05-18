@@ -8,33 +8,35 @@ using namespace std;
 class TConjunto{
 	private:
 		float a[max];
-		int q,obterIndice(float n);
+		int q;
+		int obterIndice(float x);
 	public:
-		void ler(),mostrar();
+		void ler();
+		void mostrar();
 		void uniao(TConjunto a, TConjunto b);
 		void intersecao(TConjunto a, TConjunto b);
 		void subtracao(TConjunto a, TConjunto b);
 		bool estacontido(TConjunto a){return a.contem(*this);};
 		bool contem(TConjunto a);
-		bool pertence(float n){return obterIndice(n)!=-1;};
-		void inserir(float n);
-		void remover(float n);
+		bool pertence(float x){return obterIndice(x)!=-1;};
+		void inserir(float x);
+		void remover(float x);
 };
 
-int TConjunto::obterIndice(float n){
+int TConjunto::obterIndice(float x){
 	bool achou=false;	int i=0;
-	while (!achou && i<q)a[i]==n?achou = true : i++;
+	while (!achou && i<q)a[i]==x?achou = true : i++;
 	return achou?i:-1;
 }
 
-void TConjunto::inserir(float n){
-	if (!pertence(n)){	
-		a[q]=n;
+void TConjunto::inserir(float x){
+	if (!pertence(x)){	
+		a[q]=x;
 		q++;	
 	}
 }
-void TConjunto::remover(float n){
-	int pst = obterIndice(n);
+void TConjunto::remover(float x){
+	int pst = obterIndice(x);
 	if (pst!=-1){
 		a[pst] = a[q-1];
 		q--;	

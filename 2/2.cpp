@@ -2,11 +2,11 @@
 
 using namespace std;
 
-#define MAX 100
+#define max 100
 
 class TVetInt{
     private:
-        int a[MAX],b[MAX],q;
+        int a[max],b[max],q;
     public:
         void ler();
         void inverter();
@@ -14,8 +14,7 @@ class TVetInt{
 };
 
 void TVetInt::ler(){
-    cout << "Entre com a quantidade de elementos:";
-    cin >> q;
+    cout << "Entre com a quantidade de elementos:"; cin >> q;
     for(int i=0; i<q; i++){
        cout << "entre com o valor " << i+1 << " de " << q << ":";
        cin >> a[i]; 
