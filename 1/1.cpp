@@ -1,11 +1,12 @@
 #include<iostream>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 
 class TPoligono{
     private:
-        double x[100],y[100],p=0;
+        double a[100],b[100],p=0;
         int q;
     public:
         void ler();
@@ -14,11 +15,12 @@ class TPoligono{
 
 void TPoligono::ler(){
     cin >> q;
-    for(int i=0;i<q;i++)cin >> x[i] >> y[i];
+    for(int i=0;i<q;i++)cin >> a[i] >> b[i];
 }
 
 double TPoligono::perimetro(){
-    for(int i=0;i<q;i++)p==0?p=x[i]+y[i]:p+=x[i]+y[i];
+    for(int i=0;i<q;i++)
+        i==q-1?p+=sqrt(((a[i]-a[0])*(a[i]-a[0]))+((b[i]-b[0])*(b[i]-b[0]))):p+=sqrt(((a[i]-a[i+1])*(a[i]-a[i+1]))+((b[i]-b[i+1])*(b[i]-b[i+1])));
     cout << setprecision(2) << fixed;
     return p;
 }
