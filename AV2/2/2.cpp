@@ -108,10 +108,7 @@ int main(){
     Produto d;
     Cardapio h;
     bool end = false;
-    string ok,s;
-    int i,j,k;
-    string confirma, busca;
-    int buscar;
+    int i;
     cout << setprecision(2) << fixed;
     while(!end){
         switch (menu()){
