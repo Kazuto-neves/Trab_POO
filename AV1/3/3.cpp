@@ -6,9 +6,9 @@ using namespace std;
 
 class TConjunto{
 	private:
-		float a[max];
+		double a[max];
 		int q;
-		int obterIndice(float x);
+		int obterIndice(double x);
 	public:
 		void ler();
 		void mostrar();
@@ -17,24 +17,24 @@ class TConjunto{
 		void subtracao(TConjunto a, TConjunto b);
 		bool estacontido(TConjunto a){return a.contem(*this);};
 		bool contem(TConjunto a);
-		bool pertence(float x){return obterIndice(x)!=-1;};
-		void inserir(float x);
-		void remover(float x);
+		bool pertence(double x){return obterIndice(x)!=-1;};
+		void inserir(double x);
+		void remover(double x);
 };
 
-int TConjunto::obterIndice(float x){
+int TConjunto::obterIndice(double x){
 	bool achou=false;	int i=0;
 	while (!achou && i<q)a[i]==x?achou = true : i++;
 	return achou?i:-1;
 }
 
-void TConjunto::inserir(float x){
+void TConjunto::inserir(double x){
 	if (!pertence(x)){	
 		a[q]=x;
 		q++;	
 	}
 }
-void TConjunto::remover(float x){
+void TConjunto::remover(double x){
 	int pst = obterIndice(x);
 	if (pst!=-1){
 		a[pst] = a[q-1];
@@ -44,18 +44,18 @@ void TConjunto::remover(float x){
 
 void TConjunto::ler(){
 	int N;	cin >> N;	q=0;
-	//cout << "entre com a quantidade de numeros a digitar:";
 	for(int i=0; i<N; i++){
-		float b;
-		//cout << "x=";
+		double b;
 		cin >> b;
 		inserir(b);		
 	}
 }
+
+void pulaLinha(){cout << endl;}
+
 void TConjunto::mostrar(){
-	//cout << "{ ";
 	for(int i=0; i<q; i++)cout << a[i] << " ";
-	//cout << "}" << endl;
+	pulaLinha();
 }
 void TConjunto::uniao(TConjunto a, TConjunto b){
 	q=0;
@@ -88,7 +88,7 @@ int main(){
 	cout << "a INTERSECAO b = ";
 	d.mostrar();
 	cout << "d esta contido em a: " << (d.estacontido(a)?"sim":"nao") << endl;
-	cout << "a contem d:" << (a.contem(d)?"sim":"nao") << endl;
+	cout << "a contem d: " << (a.contem(d)?"sim":"nao") << endl;
 	cout << "c esta contido em a: " << (c.estacontido(a)?"sim":"nao") << endl;
 	cout << "c contem a: " << (c.contem(a)?"sim":"nao") << endl;
 	cout << "c contem b: " << (c.contem(b)?"sim":"nao") << endl;
