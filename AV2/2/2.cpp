@@ -17,6 +17,7 @@ class Produto {
         int getCodigo() {return Codigo;}
         string getNome() {return nome;} 
         double getPreco() {return Preco;}
+        void setPreco(double p){Preco=p;}
 };
 
 class Cardapio {
@@ -28,10 +29,10 @@ class Cardapio {
         void inserirProduto(Produto d);
         int obterIndice(int &id);
         void listar();
-        int excluir(int &id);
-        void alterar(int &id, Produto d);
+        void excluir(int id);
+        void alterar(int id, double p);
         void Mostrar();
-        void Consultar(int &id);
+        void Consultar(int id);
 };
 
 void Produto::ler(){
@@ -56,18 +57,17 @@ int Cardapio::obterIndice(int &id){
     return achou ? i : -1;
 }
 
-int Cardapio::excluir(int &id){
+void Cardapio::excluir(int id){
    int pos = obterIndice(id);
    if (pos>-1){
-       v[pos] = v[qtd-1];
+       for(int i=pos+1;i<qtd;i++)v[i-1]=v[i];
        qtd--;
-       return 1;
-   }else return 0;
+   }
 }
 
-void Cardapio::alterar(int &id, Produto d){
+void Cardapio::alterar(int id,double p){
    int pos = obterIndice(id);
-   v[pos] = d;
+   v[pos].setPreco(p);
 }
 
 Cardapio::Cardapio(){qtd = 0;}
@@ -77,7 +77,7 @@ void Cardapio::inserirProduto(Produto d){
     qtd++;
 }
 
-void Cardapio::listar(){cout << "Codigo Nome" << setw(34) << right << "Preco" << endl;}
+void Cardapio::listar(){cout << "Codigo Nome                             Preco" << endl;}
 
 void Cardapio::Mostrar(){
     int i;
@@ -85,7 +85,7 @@ void Cardapio::Mostrar(){
     for (i = 0; i < qtd; i++)v[i].mostrar();
 }
 
-void Cardapio::Consultar(int &id){
+void Cardapio::Consultar(int id){
     int pos = obterIndice(id);
     pos>-1?cout<<"R$ "<<v[pos].getPreco()<<endl:cout<<"R$ 0.00"<<endl;
 }
@@ -109,30 +109,28 @@ int main(){
     Cardapio h;
     bool end = false;
     int i;
+    double p;
     cout << setprecision(2) << fixed;
     while(!end){
         switch (menu()){
             case 1:
                 d.ler();
                 h.inserirProduto(d);
-                //cout << "Produto inserida com sucesso!" << endl;
                 break;
             case 2:
                 cin >> i;
                 h.excluir(i);
-                //if(h.excluir(i))cout << "Produto removida com sucesso!" << endl;
-                //else cout << "Produto nao encontrada!" << endl;
                 break;
             case 3:
                 cin >> i;
                 h.Consultar(i);
+                break;
             case 4:
                 cin >> i;
-                if(h.obterIndice(i) > -1){
-                    d.ler();
-                    h.alterar(i, d);
-                    //cout << "Produto alterada com sucesso!" << endl;
-                } //cout << "Produto nao encontrada!" << endl;
+                //if(h.obterIndice(i) > -1){
+                cin >> p;
+                h.alterar(i, p);
+                //}
                 break;
             case 5:
                 h.Mostrar();
