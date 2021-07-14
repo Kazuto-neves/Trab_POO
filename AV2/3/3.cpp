@@ -1,8 +1,4 @@
-#include <iostream>
-#include <iomanip>
-#include <cstring>
-#include <cstdlib>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -17,9 +13,10 @@ class Contato{
 };
 
 void Contato::ler(){
-    getline(cin,Telefone);  cin.ignore(1);
-    getline(cin,Email);     cin.ignore(1);
-    getline(cin,Nome);      cin.ignore(1);
+    cin.ignore();
+    getline(cin,Nome);  
+    getline(cin,Email);
+    getline(cin,Telefone);
 }
 
 class Agenda{

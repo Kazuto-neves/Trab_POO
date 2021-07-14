@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <list>
+//#include <vector>
 
 using namespace std;
 
@@ -12,7 +12,7 @@ public:
     virtual void status()               = 0;
     virtual string getNome()            = 0;
     virtual double getRA()              = 0;
-    virtual string getClasse()		    = 0;
+    virtual double IR()                 = 0;
     virtual ~IImposto(){}
 };
 
@@ -24,8 +24,6 @@ class Pessoa : public IImposto{
         double getRA(){return RA;} /****/ void setRA(double i){RA=i;}
 
         virtual void ler();
-        virtual string getClasse() {return "Pessoa";}
-        virtual double IR() = 0;
 };
 
 void Pessoa::ler(){
@@ -46,7 +44,6 @@ class Juridica : public Pessoa{
         void ler();
         double IR();
         void status();
-        string getClasse() {return "Juridica";}
 };
 
 void Juridica::ler(){
@@ -59,12 +56,11 @@ void Juridica::ler(){
 double Juridica::IR(){return getRA()>200000?getRA()*0.25:getRA()*0.15;}
 
 void Juridica::status(){
-     cout << "Codigo : " << getCod()        << endl;
-     cout << "Nome : " << getNome()         << endl;
-     cout << "Renda Anual : " << getRA()    << endl;
-     cout << "CNPJ : " << getCNPJ()         << endl;
-     cout << "Inscr. Mun. : " << getNIM()   << endl;
-     cout << "Inscr. Est. : " << getNIN()   << endl;
+     cout << "nome : " << getNome() << endl;
+     cout << "Renda Anual : " << getRA() << endl;
+     cout << "CNPJ : " << getCNPJ() << endl;
+     cout << "Inscr. Mun. : " << getNIM() << endl;
+     cout << "Inscr. Est. : " << getNIN() << endl;
 }
 
 class Fisico : public Pessoa {
@@ -79,7 +75,6 @@ class Fisico : public Pessoa {
         void ler();
         double IR();
         void status();
-        string getClasse() {return "Fisico";}
 };
 
 void Fisico::ler(){
@@ -91,72 +86,89 @@ void Fisico::ler(){
 double Fisico::IR(){return 0.07*getRA();}
 
 void Fisico::status(){
-     cout << "Codigo : " << getCod()            << endl;
-     cout << "Nome : " << getNome()             << endl;
-     cout << "Renda Anual : " << getRA()        << endl;
-     cout << "CPF : " << getCPF()               << endl;
-     cout << "Profissao : " << getProfissao()   << endl;
-     cout << "Dependentes : " << getNumDep()    << endl;
+     cout << "nome : " << getNome() << endl;
+     cout << "Renda Anual : " << getRA() << endl;
+     cout << "CPF : " << getCPF() << endl;
+     cout << "Profissao : " << getProfissao() << endl;
+     cout << "Num. Dep. : " << getNumDep() << endl;
 }
 
 class Imposto{
     private:
-        list <IImposto*> I;
+        IImposto *v[100];
+		int        qtd;
+		int obterIndice(int id);
     public:
         Imposto();
         virtual ~Imposto();
         void inserir(IImposto *a);
         void remover (int id);
+        bool existe(int id);
         void listar();
         void consultar(int id);
-        void MostrarIR(int id);
+        void MostrarIR (int id);
         void mostrar();
 };
 
-Imposto::Imposto(){}
+Imposto::Imposto(){qtd=0;}
 
-Imposto::~Imposto(){for(auto it=I.end();it!=I.begin();--it)I.erase(it);}
+Imposto::~Imposto(){for(int i=0;i<qtd;i++)delete v[i];}
 
-void Imposto::inserir(IImposto *a){I.push_back(a);}
+int Imposto::obterIndice(int id){
+	bool achou=false;
+	int i=0;
+	while (!achou && i<qtd)
+		if (v[i]->getCod() == id)achou = true;
+		else i++;	
+	return achou?i : -1;
+}
+
+bool Imposto::existe(int id){return obterIndice(id)>-1;}
+
+void Imposto::inserir(IImposto *a){
+    v[qtd]=a;
+    qtd++;
+}
 
 void Imposto::remover(int id){
-    for(auto it = I.begin();it!=I.end();++it){
-        if(it.operator*()->getCod() == id)I.erase(it);
-    }
+	int pos = obterIndice(id);
+	if (pos>-1){
+		for(int i=pos+1; i<qtd; i++)v[i-1] = v[i];
+		qtd--;
+	}
 }
 
 void Imposto::consultar(int id){
-    for(auto it:I){
-        if(it->getCod() == id){
-            it->status();
+    for(int i=0;i<qtd;i++){
+        if ((typeid(Juridica) == typeid(*v[i])) && ((Juridica*)v[i])->getCod() == id){
+            v[i]->status();
         }
     }
 }
 
 void Imposto::listar(){
-    cout << "Codigo " << "Nome"
-    << setfill(' ')
-    << setw(30) << "F/J"
-    << setw(21) << "CPF/CNPJ"
-    << setw(13) << "IR" << endl;
+    cout << setfill(' ') << "Codigo Nome"
+    << setw(28) << right << "F/J"
+    << setw(16) << right << "CPF/CNPJ"
+    << setw(22) << right << "IR" << endl;
 }
 
 void Imposto::mostrar(){
     listar();
-    for(auto it:I){
-        cout << setfill('0') << setw(5) << it->getCod() << "  "
-        << setfill(' ') << setw(30) << left << it->getNome() << "  "
-        << setw(2) << (it->getClasse() == "Juridica"?"J":"F")
-        << right << setw(21) << (it->getClasse() == "Juridica"?((Juridica*)it)->getCNPJ() : ((Fisico*)it)->getCPF()) << " "
-        << "R$ " << setfill(' ')<< left << setw(9) << it->getRA() << endl;
-        }
+    for(int i=0; i< qtd; i++)
+		cout << v[i]->getCod() << setfill('0') << setw(5) << "  " << setfill(' ')
+			 << setw(30) << left << v[i]->getNome() << "  "
+			 << setw(20) << left << ((typeid(Juridica) == typeid(*v[i])) ? "J" : "F") << " "
+			 << setw(20) << left << ((typeid(Juridica) == typeid(*v[i])) ? ((Juridica*)v[i])->getCNPJ() : ((Fisico*)v[i])->getCPF()) << " R$  " 
+			 << setw(10) << v[i]->IR() << endl; 
 }
 
 void Imposto::MostrarIR(int id){
-    for(auto it:I){
-        if((it->getClasse()=="Juridica") && ((Juridica*)it)->getCod() == id)cout <<"R$ "<< ((Juridica*)it)->IR() << endl;
-        else if((it->getClasse()=="Fisico") && ((Fisico*)it)->getCod() == id)cout <<"R$ "<< ((Fisico*)it)->IR() << endl;
-    }
+        for(int i=0;i<qtd;i++){
+            if ((typeid(Juridica) == typeid(*v[i])) && ((Juridica*)v[i])->getCod() == id){
+                cout << v[i]->IR() << endl;
+        }
+    } 
 }
 
 int menu(){
@@ -168,8 +180,8 @@ int menu(){
              << "4 - consultar" << endl
              << "5 - ir" << endl
              << "6 - listar" << endl
-             << "7 - Sair" << endl
-             << "Entre com a sua escolha: ";
+             << "7. Sair" << endl
+             << "Escolha uma opcao: ";
         cin >> opc;
     } while (opc < 1 || opc > 7);
     cin.ignore();
@@ -180,25 +192,29 @@ int menu(){
 int main(){
     Pessoa* Pessoa;
     Imposto l;
+    string texto;
     bool fim = false;
     int codigo;
-    cout << setprecision(2) << fixed;
     while (!fim){
         switch (menu()){
         case 1:
             Pessoa = new Fisico();
             Pessoa->ler();
             l.inserir(Pessoa);
-            break;
+            cout << "Inserida com sucesso!" << endl; break;
         case 2:
             Pessoa = new Juridica();
             Pessoa->ler();
             l.inserir(Pessoa);
-            break;
+            cout << "Inserida com sucesso!" << endl; break;
         case 3:
             cin >> codigo;
-            l.remover(codigo);
-            break;
+            cout << endl;
+            if(l.existe(codigo)){
+                l.remover(codigo);
+                cout << "Removido com sucesso!" << endl;              
+            }else
+                cout << "Nao encontrado!" << endl; break;
         case 4:
             cin >> codigo;
             l.consultar(codigo);
@@ -211,11 +227,9 @@ int main(){
             l.mostrar();
             break;
         case 7:
-          cout << "Programa encerrado!" << endl;
-            fim = true;
-            break;
-        default: 
-          break;
+            fim = true; break;
+        default:
+            cout << "Opcao invalida!" << endl; break;
         }
     }
 }

@@ -8,9 +8,9 @@
             "name": "(Windows) Iniciar",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "E:\\git\\C++\\Trab_POO\\AV2\\2\\2.exe",
+            "program": "E:\\git\\C++\\Trab_POO\\AV2\\3\\3.exe",
             "args": [],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${fileDirname}",
             "environment": [],
             "console": "externalTerminal"

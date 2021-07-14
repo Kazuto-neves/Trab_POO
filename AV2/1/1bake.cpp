@@ -1,174 +1,163 @@
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <list>
+#include<string>
+#include<iostream>
+#include<iomanip>
+#include "IAlugavel.h"
+#include "Locadora.h"
+#include "Jogo.h"
 
 using namespace std;
 
-class IImposto {
-public:
-    virtual int getCodigo()             = 0;
-    virtual void ler()                  = 0;
-    virtual bool contains(string texto) = 0;
-    virtual string getNome()            = 0;
-    virtual double getRA()              = 0;
-    virtual double IR()                 = 0;
-    virtual ~IImposto(){}
-};
+Locadora::Locadora()
+{
+	qtd = 0;
+}		
 
-class Pessoa : public IImposto {
-private:
-    int codigo;
-    string nome;
-    double RA;
-public:
-    int getCodigo(); /***/ void setCodigo(int v);
-    string getNome(); /**/ void setNome(string v);
-    double getRA(); /****/ void setRA(double v);
-
-    virtual void ler();
-    virtual bool contains(string texto);
-};
-
-int Pessoa::getCodigo(){return codigo;} /****/ void Pessoa::setCodigo(int v){codigo = v;}
-
-string Pessoa::getNome(){return nome;} /*****/ void Pessoa::setNome(string v){nome = v;}
-
-double Pessoa::getRA(){return RA;} /*********/ void Pessoa::setRA(double v){RA = v;}
-
-void Pessoa::ler(){
-    cin >> codigo;  cin.ignore(1);
-    getline(cin, nome);
-    cin >> RA;
+Locadora::~Locadora()
+{
+	for(int i=0;i<qtd;i++)
+		delete vet[i];
 }
 
-class Juridica : public Pessoa {
-private:
-    string CNPJ;
-    int NIM,NIN;
-public:
-    void ler();
-    bool contains(string texto);
-    double IR();
-
-    string getCNPJ(); /***/ void setCNPJ(string v);
-    int getNIM(); /*******/ void setNIM(int v);
-    int getNIN(); /*******/ void setNIN(int v);
-};
-
-string Juridica::getCNPJ(){return CNPJ;} /****/ void Juridica::setCNPJ(string v){CNPJ = v;}
-
-int Juridica::getNIM(){return NIM;} /********/ void Juridica::setNIM(int v){NIM = v;}
-int Juridica::getNIN(){return NIN;} /********/ void Juridica::setNIN(int v){NIN = v;}
-
-void Juridica::ler(){
-    Pessoa::ler();
-    getline(cin,CNPJ);
-    cin >> NIM >> NIN;
+int Locadora::obterIndice(int codigo)
+{
+	bool achou=false;
+	int i=0;
+	while (!achou && i<qtd)
+		if (vet[i]->getCodigo() == codigo)
+			achou = true;
+		else
+			i++;	
+	return achou?i : -1;
 }
 
-double Juridica::IR(){return getRA()>200000? getRA()*0.25 : getRA()*0.15;}
-
-class Fisico : public Pessoa {
-private:
-    int NumDep;
-    string CPF,profissao;
-public:
-    void ler();
-    bool contains(string texto);
-    double IR();
-
-    int getNumDep(); /********/ void setNumDep(int v);
-    string getCPF(); /********/ void setCPF(string v);
-    string getProfissao(); /**/ void setProfissao(string v);
-};
-
-int Fisico::getNumDep(){return NumDep;} /***********/ void Fisico::setNumDep(int v){NumDep = v;}
-
-string Fisico::getCPF(){return CPF;} /**************/ void Fisico::setCPF(string v){CPF = v;}
-
-string Fisico::getProfissao(){return profissao;} /**/ void Fisico::setProfissao(string v){profissao = v;}
-
-void Fisico::ler(){
-    Pessoa::ler();
-    cin.ignore(1);
-    getline(cin,CPF);
-    getline(cin,profissao);
-    cin >> NumDep;
+void Locadora::inserir(IAlugavel *a)
+{
+	vet[qtd]=a;
+	qtd++;
 }
 
-double Fisico::IR(){return (0.07*getRA());}
-
-
-
-class Imposto{
-private:
-    list <IImposto*> I; // Precisa de Ponteiro
-    int obterIndice(int codigo);
-public:
-    Imposto();
-    virtual ~Imposto();
-    void inserir(IImposto *a);
-    void remover(int codigo);
-    void listar();
-    bool existe(int codigo);
-    void filtrar(string texto);
-    void filtrarCPF(string CPF);
-    double obterDiaria(int codigo);
-};
-
-Imposto::Imposto(){} // construtor não precisa ter nada
-
-Imposto::~Imposto(){for(auto it=I.end();it!=I.begin();it--)I.erase(it);}
-
-//int Imposto::obterIndice(int codigo){
-//    bool achou=false;
-//    int i=0;
-//    while (!achou && i<I.size())
-//        for(auto it=I.begin();it!=I.end();it++)
-//            if (I->getCodigo() == codigo) achou = true;
-//            else i++;
-//    return achou?i : -1;
-//}
-
-void Imposto::inserir(IImposto *a){
-
-   I.push_back(a); //Vc não está trabalhando com vetor[]
-
-//    vet[qtd]=a;
-//    qtd++;
+void Locadora::remover(int codigo)
+{
+	int pos = obterIndice(codigo);
+	if (pos>-1)
+	{
+		for(int i=pos+1; i<qtd; i++)
+			vet[i-1] = vet[i];
+		qtd--;
+	}
 }
 
-void Imposto::remover(int codigo){
-	for(auto it = I.begin(); it != I.end(); ++ it){
-        if(it.operator*()->getCodigo() == codigo){
-            I.erase(it);
-        }
-    }
-
-//    int pos = obterIndice(codigo);
-//    if (pos>-1){
-//        for(int i=pos+1; i<qtd; i++)vet[i-1] = vet[i];
-//        qtd--;
-//    }
+void Locadora::alterar(int codigo, IAlugavel *a)
+{
+	int pos = obterIndice(codigo);
+	if (pos>-1)
+	{
+		delete vet[pos];
+		vet[pos]=a;
+	}
+}
+bool Locadora::existe(int codigo)
+{
+	return obterIndice(codigo)>-1;
 }
 
-void Imposto::alterar(int codigo, IImposto *a){ //NÃO TEM ALTERAR NO EXERCICIO
-
-//    int pos = obterIndice(codigo);
-//    if (pos>-1){
-//        delete vet[pos];
-//        vet[pos]=a;
-//    }
+double Locadora::obterDiaria(int codigo)
+{
+	int pos = obterIndice(codigo);
+	if (pos>-1)
+		return vet[pos]->diaria();
+	else
+		return 0;
 }
 
-//bool Imposto::existe(int codigo){return obterIndice(codigo)>-1;}
-//
-//double Imposto::obterDiaria(int codigo){
-//    int pos = obterIndice(codigo);
-//    if (pos>-1) return vet[pos]->diaria();
-//    else return 0;
-//}
+void Locadora::listar()
+{
+	cout << setfill(' ') << setw(3) << "Cod" << "!" 
+			<< setw(50) << left << "Titulo" << "!"
+			<< setw(20) << "Tipo" << "!"
+			<< setw(30) << left << "Midia"  << "!"
+			<< setw(4) << right << "Ano" << "!"
+			<< setw(8) << "Diaria" << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+	for(int i=0; i< qtd; i++)
+		cout << setfill('0') << setw(3) << vet[i]->getCodigo() << "!" << setfill(' ')
+			 << setw(50) << left << vet[i]->getTitulo() << "!"
+			 << setw(20) << ((typeid(Jogo) == typeid(*vet[i])) ? "Jogo" : "Filme") << "!"
+			 << setw(30) << left << vet[i]->getMidia() << "!"
+			 << setw(4) << right << vet[i]->getAno() << "!"
+			 << setw(8) << vet[i]->diaria() << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+}
+void Locadora::filtrar(string texto)
+{
+	cout << setfill(' ') << setw(3) << "Cod" << "!" 
+			<< setw(50) << left << "Titulo" << "!"
+			<< setw(20) << "Tipo" << "!"
+			<< setw(30) << left << "Midia"  << "!"
+			<< setw(4) << right << "Ano" << "!"
+			<< setw(8) << "Diaria"  << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+	for(int i=0; i< qtd; i++)
+		if (vet[i]->contains(texto))
+			cout << setfill('0') << setw(3) << vet[i]->getCodigo() << "!" << setfill(' ')
+				<< setw(50) << left << vet[i]->getTitulo() << "!"
+				<< setw(20) << ((typeid(Jogo) == typeid(*vet[i])) ? "Jogo" : "Filme") << "!"
+				<< setw(30) << left << vet[i]->getMidia() << "!"
+				<< setw(4) << right << vet[i]->getAno() << "!"
+				<< setw(8) << vet[i]->diaria() << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+}
+void Locadora::filtrarPlataforma(string plataforma)
+{
+	cout << setfill(' ') << setw(3) << "Cod" << "!" 
+			<< setw(50) << left << "Titulo" << "!"
+			<< setw(20) << "Tipo" << "!"
+			<< setw(30) << left << "Midia"  << "!"
+			<< setw(4) << right << "Ano" << "!"
+			<< setw(8) << "Diaria" << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+	for(int i=0; i< qtd; i++)
+		if ((typeid(Jogo) == typeid(*vet[i])) && ((Jogo*)vet[i])->getPlataforma().find(plataforma)!=string::npos)
+			cout << setfill('0') << setw(3) << vet[i]->getCodigo() << "!" << setfill(' ')
+				<< setw(50) << left << vet[i]->getTitulo() << "!"
+				<< setw(20) << ((typeid(Jogo) == typeid(*vet[i])) ? "Jogo" : "Filme") << "!"
+				<< setw(30) << left << vet[i]->getMidia() << "!"
+				<< setw(4) << right << vet[i]->getAno() << "!"
+				<< setw(8) << vet[i]->diaria() << endl; 
+	cout << setfill('-') << setw(3) << "-" << "+" 
+			<< setw(50) << left << "-" << "+"
+			<< setw(20) << "-" << "+"
+			<< setw(30) << left << "-"  << "+"
+			<< setw(4) << right << "-" << "+"
+			<< setw(8) << "-" << endl; 
+}
+
+
 
 int menu(){
     int opc;
