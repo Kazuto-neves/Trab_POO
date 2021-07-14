@@ -13,6 +13,7 @@ public:
     virtual string getNome()            = 0;
     virtual double getRA()              = 0;
     virtual string getClasse()		    = 0;
+    virtual double IR()                 = 0;
     virtual ~IImposto(){}
 };
 
@@ -25,7 +26,6 @@ class Pessoa : public IImposto{
 
         virtual void ler();
         virtual string getClasse() {return "Pessoa";}
-        virtual double IR() = 0;
 };
 
 void Pessoa::ler(){
@@ -105,7 +105,7 @@ class Imposto{
     public:
         Imposto();
         virtual ~Imposto();
-        void inserir(IImposto *a);
+        void inserir(IImposto* a);
         void remover (int id);
         void listar();
         void consultar(int id);
@@ -115,21 +115,22 @@ class Imposto{
 
 Imposto::Imposto(){}
 
-Imposto::~Imposto(){for(auto it=I.end();it!=I.begin();--it)I.erase(it);}
+Imposto::~Imposto(){
+   for(auto it : I)
+        delete it;
+   I.clear();
+}
 
-void Imposto::inserir(IImposto *a){I.push_back(a);}
+void Imposto::inserir(IImposto* a){I.push_back(a);}
 
 void Imposto::remover(int id){
-    for(auto it = I.begin();it!=I.end();++it){
-        if(it.operator*()->getCod() == id)I.erase(it);
-    }
+    I.remove_if([id](const IImposto* c){
+        return((IImposto*)c)->getCod()==id;});
 }
 
 void Imposto::consultar(int id){
     for(auto it:I){
-        if(it->getCod() == id){
-            it->status();
-        }
+        if(it->getCod() == id)it->status();
     }
 }
 
@@ -144,18 +145,17 @@ void Imposto::listar(){
 void Imposto::mostrar(){
     listar();
     for(auto it:I){
-        cout << setfill('0') << setw(5) << it->getCod() << "  "
+        cout << setfill('0') << setw(5) << right << it->getCod() << "  "
         << setfill(' ') << setw(30) << left << it->getNome() << "  "
         << setw(2) << (it->getClasse() == "Juridica"?"J":"F")
         << right << setw(21) << (it->getClasse() == "Juridica"?((Juridica*)it)->getCNPJ() : ((Fisico*)it)->getCPF()) << " "
-        << "R$ " << setfill(' ')<< left << setw(9) << it->getRA() << endl;
+        << "R$" << setfill(' ')<< right << setw(10) << (it->IR()) << endl;
         }
 }
 
 void Imposto::MostrarIR(int id){
     for(auto it:I){
-        if((it->getClasse()=="Juridica") && ((Juridica*)it)->getCod() == id)cout <<"R$ "<< ((Juridica*)it)->IR() << endl;
-        else if((it->getClasse()=="Fisico") && ((Fisico*)it)->getCod() == id)cout <<"R$ "<< ((Fisico*)it)->IR() << endl;
+        if(it->getCod() == id)cout <<"R$ "<< it->IR() << endl;
     }
 }
 
@@ -181,7 +181,7 @@ int main(){
     Pessoa* Pessoa;
     Imposto l;
     bool fim = false;
-    int codigo;
+    int id;
     cout << setprecision(2) << fixed;
     while (!fim){
         switch (menu()){
@@ -196,25 +196,26 @@ int main(){
             l.inserir(Pessoa);
             break;
         case 3:
-            cin >> codigo;
-            l.remover(codigo);
+            cin >> id;
+            l.remover(id);
             break;
         case 4:
-            cin >> codigo;
-            l.consultar(codigo);
+            cin >> id;
+            l.consultar(id);
             break;
         case 5:
-            cin >> codigo;
-            l.MostrarIR(codigo);              
+            cin >> id;
+            l.MostrarIR(id);              
             break;
         case 6:
             l.mostrar();
             break;
         case 7:
-          cout << "Programa encerrado!" << endl;
+            cout << "Programa encerrado!" << endl;
             fim = true;
             break;
-        default: 
+        default:
+          menu(); 
           break;
         }
     }
