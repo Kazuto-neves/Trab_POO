@@ -14,7 +14,7 @@ Biju-vc-terias
 4321
 2
 1002
-123 Xerox 
+123 Xerox
 345678.90
 444.444.444/0004-44
 4567
@@ -26,11 +26,12 @@ Maria das Gracas
 222.222.222-22
 Analista Financeira
 1
-4
-2
 5
 2
-3
+4
+1
+5
+1002
+4
 1001
-6
 7
